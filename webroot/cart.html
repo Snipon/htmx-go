@@ -1,0 +1,28 @@
+<div>
+  <div id="cart" hx-get="/api/cart/bda511c6-81b5-4383-91d0-66c1e6070f10"
+       hx-trigger="load" mustache-template="cart-template"></div>
+
+  <template id="cart-template">
+    <div>
+      <p>{{lineItems.length}}</p>
+      <ul>
+        {{#lineItems}}
+        <li>{{product.name}} <span>({{quantity}})</span></li>
+        {{/lineItems}}
+      </ul>
+    </div>
+  </template>
+  <script>
+    window.addEventListener("load", async () => {
+      const cart = localStorage.getItem("cart");
+      if (!cart) {
+        const res = await fetch('/api/cart');
+        const data = await res.json();
+        localStorage.setItem("cart", data.id);
+      } else {
+        window.cart = cart;
+      }
+      //htmx.ajax("GET", `/api/cart/${cart}`, "#cart");
+    })
+  </script>
+</div>

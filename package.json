@@ -1,0 +1,16 @@
+{
+  "name": "htmx-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "css:build": "npx tailwindcss -i ./base.css -o ./webroot/main.css --minify",
+    "css:watch": "npx tailwindcss -w -i ./base.css -o ./webroot/main.css"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "tailwindcss": "^3.4.3"
+  }
+}

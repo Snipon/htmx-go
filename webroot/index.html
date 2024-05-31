@@ -1,9 +1,23 @@
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <title>HTMX demo</title>
+  <title>HTMX demo</title>
+  <link rel="stylesheet" href="main.css">
 </head>
-<body>
-    <h1>Works</h1>
-    <script src="https://unpkg.com/htmx.org@1.9.12" integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2" crossorigin="anonymous"></script>
+<body class="flex flex-col  gap-5">
+<header class="bg-foreground text-background p-3">
+  <div class="container">
+    <h1 class="text-lg font-bold">HTMX demo</h1>
+  </div>
+</header>
+<div class="container" hx-ext="client-side-templates">
+  <div hx-get="/actions.html" hx-trigger="load"></div>
+  <div hx-get="/cart.html" hx-trigger="load"></div>
+</div>
+<script src="https://unpkg.com/htmx.org@latest"></script>
+<script
+    src="https://unpkg.com/htmx.org@latest/dist/ext/client-side-templates.js"></script>
+<script src="https://unpkg.com/mustache@latest"></script>
+<script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/json-enc.js"></script>
 </body>
 </html>

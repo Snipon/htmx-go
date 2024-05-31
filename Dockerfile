@@ -7,6 +7,4 @@ RUN go build  -o api
 FROM alpine
 WORKDIR /app
 COPY --from=builder /src/api /app
-ENV MONGO_URL=mongodb://mongo:27017
-EXPOSE 8080
 CMD ["/app/api"]
