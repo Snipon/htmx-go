@@ -72,6 +72,7 @@ func getCart(c *gin.Context) {
 	err := collection.FindOne(context.TODO(), filter).Decode(&cart)
 	if err != nil {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"error": "Cart not found"})
+		log.Fatal(err)
 		return
 	}
 
@@ -89,6 +90,7 @@ func addToCart(c *gin.Context) {
 	var cart Cart
 
 	if err := c.BindJSON(&lineItem); err != nil {
+		log.Fatal(err)
 		return
 	}
 
@@ -103,6 +105,7 @@ func addToCart(c *gin.Context) {
 	err := collection.FindOneAndUpdate(context.TODO(), filter, update, &opt).Decode(&cart)
 	if err != nil {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"error": "Cart not found"})
+		log.Fatal(err)
 		return
 	}
 
@@ -122,6 +125,7 @@ func createCart(c *gin.Context) {
 	_, err := collection.InsertOne(context.TODO(), cart)
 	if err != nil {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Failed to create cart"})
+		log.Fatal(err)
 		return
 	}
 
@@ -135,6 +139,7 @@ func deleteCart(c *gin.Context) {
 	_, err := collection.DeleteOne(context.TODO(), bson.M{"_id": id})
 	if err != nil {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"error": "Cart not found"})
+		log.Fatal(err)
 		return
 	}
 	c.IndentedJSON(http.StatusNoContent, gin.H{})
