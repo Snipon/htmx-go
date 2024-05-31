@@ -147,6 +147,9 @@ func deleteCart(c *gin.Context) {
 
 func main() {
 	router := gin.Default()
+	router.GET("/", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"status": "ok"})
+	})
 	router.GET("/cart", createCart)
 	router.GET("/cart/:id", getCart)
 	router.PUT("/cart/:id", addToCart)
