@@ -5,9 +5,10 @@
   <template id="cart-template">
     <div>
       <p>{{lineItems.length}}</p>
+      <p>{{id}}</p>
       <ul>
         {{#lineItems}}
-        <li>{{product.name}} <span>({{quantity}})</span></li>
+        <li>{{product.name}} <span>({{quantity}})</span> <button class="btn" hx-delete="/cart/{{../id}}/{{product.sku}}">Delete</button> </li>
         {{/lineItems}}
       </ul>
     </div>
@@ -22,7 +23,6 @@
       } else {
         window.cart = cart;
       }
-      //htmx.ajax("GET", `/api/cart/${cart}`, "#cart");
     })
   </script>
 </div>
