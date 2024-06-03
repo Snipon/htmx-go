@@ -1,0 +1,22 @@
+<div hx-ext="client-side-templates">
+  <div hx-get="/api/products?amount=20" hx-trigger="load" mustache-array-template="result-template" hx-swap="innerHTML"></div>
+  <template id="result-template">
+    <ul class="grid grid-cols-5 gap-xs mt-xs animate-fade-in">
+    {{#data}}
+    <li class="flex flex-col gap-xs p-xs bg-dimmed">
+      <h2>{{name}}</h2>
+        <button
+            class="btn text-xs"
+            hx-put="/api/cart/4ecfd722-3735-430d-b7ec-1b4a2e8cc61d"
+            mustache-template="cart-template"
+            hx-swap="innerHTML"
+            hx-target="#cart"
+            hx-indicator="true"
+            hx-ext="json-enc"
+            hx-vals='{"Product": {"sku": "{{sku}}", "name": "{{name}}", "image": "{{image}}"}, "Id": {{sku}}, "Quantity": 1}'
+        >Add to cart</button>
+      </li>
+    {{/data}}
+      </ul>
+  </template>
+</div>

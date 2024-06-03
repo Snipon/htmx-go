@@ -3,8 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/gin-contrib/cache"
+	"github.com/gin-contrib/cache/persistence"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/jaswdr/faker/v2"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -12,6 +15,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -174,13 +178,37 @@ func deleteCart(c *gin.Context) {
 	c.IndentedJSON(http.StatusNoContent, gin.H{})
 }
 
+func getProducts(c *gin.Context) {
+	amount := c.DefaultQuery("amount", "10")
+	limit, err := strconv.Atoi(amount)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": "Invalid amount"})
+		return
+	}
+	fake := faker.New()
+	var Products []Product
+	for i := 0; i < limit; i++ {
+		image := fake.Image().Image(200, 200).Name()
+		Products = append(Products, Product{
+			SKU:   uuid.New().String(),
+			Name:  fake.Pet().Name(),
+			Image: image,
+		})
+	}
+	c.IndentedJSON(http.StatusOK, Products)
+}
+
 func index(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 }
 
 func main() {
 	router := gin.Default()
+
+	store := persistence.NewInMemoryStore(time.Second)
+
 	router.GET("/", index)
+	router.GET("/products", cache.CachePage(store, 10*time.Minute, getProducts))
 	router.GET("/cart", createCart)
 	router.GET("/cart/:id", getCart)
 	router.PUT("/cart/:id", addToCart)

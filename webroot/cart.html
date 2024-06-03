@@ -1,16 +1,11 @@
 <div>
-  <div id="cart" hx-get="/api/cart/bda511c6-81b5-4383-91d0-66c1e6070f10"
+  <div id="cart" hx-get="/api/cart/4ecfd722-3735-430d-b7ec-1b4a2e8cc61d"
        hx-trigger="load" mustache-template="cart-template"></div>
 
   <template id="cart-template">
     <div>
       <p>{{lineItems.length}}</p>
       <p>{{id}}</p>
-      <ul>
-        {{#lineItems}}
-        <li>{{product.name}} <span>({{quantity}})</span> <button class="btn" hx-delete="/cart/{{../id}}/{{product.sku}}">Delete</button> </li>
-        {{/lineItems}}
-      </ul>
     </div>
   </template>
   <script>
