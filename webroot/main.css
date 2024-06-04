@@ -630,12 +630,21 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+.mx-xs {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
 .mb-4 {
   margin-bottom: 1rem;
 }
 
 .mt-xs {
   margin-top: 1rem;
+}
+
+.mb-xs {
+  margin-bottom: 1rem;
 }
 
 .flex {
@@ -668,12 +677,24 @@ h1, h2, h3, h4, h5, h6 {
   flex-direction: column;
 }
 
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
 .gap-5 {
   gap: 1.25rem;
 }
 
 .gap-xs {
   gap: 1rem;
+}
+
+.gap-sm {
+  gap: 1.5rem;
 }
 
 .rounded-md {

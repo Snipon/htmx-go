@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>HTMX demo</title>
+  <link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
+  <link rel="stylesheet" href="/assets/main.css">
+</head>
+<body class="flex flex-col  gap-5">
+<div hx-ext="client-side-templates">
+  <header class="bg-foreground text-background p-3 mb-xs">
+    <div class="container flex justify-between items-center">
+      <h1 class="text-lg"><a href="/">HTMX demo</a></h1>
+      <nav>
+        <ul hx-boost="true" hx-target="#content" class="flex gap-xs">
+          <li>
+            <a href="/">Home</a>
+          </li>
+          <li>
+            <a href="/products">Results</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main class="container" id="content">
+    {{ template "content" . }}
+  </main>
+</div>
+<script src="https://unpkg.com/htmx.org@latest"></script>
+<script
+    src="https://unpkg.com/htmx.org@latest/dist/ext/client-side-templates.js"></script>
+<script src="https://unpkg.com/mustache@latest"></script>
+<script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/json-enc.js"></script>
+</body>
+</html>

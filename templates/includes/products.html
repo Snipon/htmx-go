@@ -1,0 +1,10 @@
+{{ define "content" }}
+<h2>Products</h2>
+<ul class="grid grid-cols-5 gap-xs">
+  {{ range . }}
+  <li>
+    <h3>{{ .Name }}</h3>
+  </li>
+  {{ end }}
+</ul>
+{{ end }}

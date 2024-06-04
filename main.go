@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-contrib/cache"
 	"github.com/gin-contrib/cache/persistence"
+	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/jaswdr/faker/v2"
@@ -15,7 +16,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strconv"
+	"path/filepath"
 	"time"
 )
 
@@ -178,16 +179,10 @@ func deleteCart(c *gin.Context) {
 	c.IndentedJSON(http.StatusNoContent, gin.H{})
 }
 
-func getProducts(c *gin.Context) {
-	amount := c.DefaultQuery("amount", "10")
-	limit, err := strconv.Atoi(amount)
-	if err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": "Invalid amount"})
-		return
-	}
+func getProducts(amount int) []Product {
 	fake := faker.New()
 	var Products []Product
-	for i := 0; i < limit; i++ {
+	for i := 0; i < amount; i++ {
 		image := fake.Image().Image(200, 200).Name()
 		Products = append(Products, Product{
 			SKU:   uuid.New().String(),
@@ -195,25 +190,58 @@ func getProducts(c *gin.Context) {
 			Image: image,
 		})
 	}
-	c.IndentedJSON(http.StatusOK, Products)
+	return Products
 }
 
 func index(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"status": "ok"})
+	c.HTML(http.StatusOK, "base.html", gin.H{"status": "ok"})
+}
+
+func loadTemplates(templatesDir string) multitemplate.Renderer {
+	r := multitemplate.NewRenderer()
+
+	layouts, err := filepath.Glob(templatesDir + "/layouts/*.html")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	includes, err := filepath.Glob(templatesDir + "/includes/*.html")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	// Generate our templates map from our layouts/ and includes/ directories
+	for _, include := range includes {
+		layoutCopy := make([]string, len(layouts))
+		copy(layoutCopy, layouts)
+		files := append(layoutCopy, include)
+		r.AddFromFiles(filepath.Base(include), files...)
+	}
+	return r
 }
 
 func main() {
 	router := gin.Default()
-
+	router.HTMLRender = loadTemplates("./templates")
 	store := persistence.NewInMemoryStore(time.Second)
+	router.Static("/assets", "./webroot")
 
-	router.GET("/", index)
-	router.GET("/products", cache.CachePage(store, 10*time.Minute, getProducts))
-	router.GET("/cart", createCart)
-	router.GET("/cart/:id", getCart)
-	router.PUT("/cart/:id", addToCart)
-	router.DELETE("/cart/:id", deleteCart)
-	router.DELETE("/cart/:id/:sku", removeFromCart)
+	router.GET("/", cache.CachePage(store, 10*time.Minute, func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html", gin.H{"Title": "This is a HTMX Demo", "Body": "Welcome to the HTMX Demo"})
+	}))
+
+	router.GET("/products", cache.CachePage(store, 10*time.Minute, func(c *gin.Context) {
+		c.HTML(http.StatusOK, "products.html", getProducts(10))
+	}))
+
+	router.GET("/api/products", cache.CachePage(store, 10*time.Minute, func(c *gin.Context) {
+		c.IndentedJSON(http.StatusOK, getProducts(10))
+	}))
+	router.GET("/api/cart", createCart)
+	router.GET("/api/cart/:id", getCart)
+	router.PUT("/api/cart/:id", addToCart)
+	router.DELETE("/api/cart/:id", deleteCart)
+	router.DELETE("/api/cart/:id/:sku", removeFromCart)
 
 	router.Run(":8080")
 }
